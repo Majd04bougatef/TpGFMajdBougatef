@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
 import tn.esprit.TpGFMajdBougatef.repositories.ChambreRepository;
+import tn.esprit.TpGFMajdBougatef.repositories.ReservationRepository;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ChambreServiceInterfaces;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.time.ZoneId;
 public class ChambreServiceImp implements ChambreServiceInterfaces {
 
     private final ChambreRepository chambreRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
     public List<Chambre> retrieveAllChambres() { return chambreRepository.findAll(); }
@@ -32,7 +34,7 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
     // Partie 5
     @Override
     public List<Chambre> getChambresParNomUniversite(String nomUniversite) {
-        return chambreRepository.findByUniversiteNom(nomUniversite);
+        return chambreRepository.findByBloc_Foyer_Universite_NomUniversite(nomUniversite);
     }
 
     @Override
@@ -43,12 +45,19 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
 
     // Alternative JPQL approach (not part of interface, but available for controller demo)
     public List<Chambre> getChambresParBlocEtTypeJPQL(long idBloc, tn.esprit.TpGFMajdBougatef.entities.TypeChambre typeC) {
-        return chambreRepository.findByBlocAndType_JPQL(idBloc, typeC);
+        // Without JPQL we simply delegate to the same derived method
+        return chambreRepository.findByBloc_IdBlocAndTypeC(idBloc, typeC);
     }
 
     @Override
     public List<Chambre> getChambresNonReserveParNomUniversiteEtTypeChambre(String nomUniversite, tn.esprit.TpGFMajdBougatef.entities.TypeChambre type) {
-        Date currentYearDate = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return chambreRepository.findNonReservedByUniversiteAndTypeForAcademicYear(nomUniversite, type, currentYearDate);
+        int targetYear = LocalDate.now().getYear();
+        // Fetch all chambres for this université and type, then filter out those having a reservation in the same year
+        List<Chambre> candidates = chambreRepository.findByTypeCAndBloc_Foyer_Universite_NomUniversite(type, nomUniversite);
+        return candidates.stream()
+                .filter(c -> c.getReservations() == null || c.getReservations().stream()
+                        .noneMatch(r -> r.getAnneeUniversitaire() != null &&
+                                r.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear() == targetYear))
+                .toList();
     }
 }

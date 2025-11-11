@@ -8,6 +8,8 @@ import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ReservationServiceI
 
 import java.util.List;
 import java.util.Date;
+import java.time.ZoneId;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,12 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
     // Partie 5
     @Override
     public List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(Date anneeUniversite, String nomUniversite) {
-        return reservationRepository.findByAcademicYearAndUniversite(anneeUniversite, nomUniversite);
+        // Without JPQL YEAR, fetch by university and filter by year in memory
+        int targetYear = anneeUniversite.toInstant().atZone(ZoneId.systemDefault()).getYear();
+        return reservationRepository.findByChambre_Bloc_Foyer_Universite_NomUniversite(nomUniversite)
+                .stream()
+                .filter(r -> r.getAnneeUniversitaire() != null &&
+                        r.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear() == targetYear)
+                .toList();
     }
 }
