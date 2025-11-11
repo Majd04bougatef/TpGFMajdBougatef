@@ -52,7 +52,8 @@
         {"name": "Créer bloc", "request": {"method": "POST", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"nomBloc\": \"Bloc A\",\n  \"capaciteBloc\": 100\n}"}, "url": "{{baseUrl}}/api/blocs"}},
         {"name": "Modifier bloc", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idBloc\": 1,\n  \"nomBloc\": \"Bloc A\",\n  \"capaciteBloc\": 120\n}"}, "url": "{{baseUrl}}/api/blocs"}},
         {"name": "Consulter bloc", "request": {"method": "GET", "url": "{{baseUrl}}/api/blocs/1"}},
-        {"name": "Supprimer bloc", "request": {"method": "DELETE", "url": "{{baseUrl}}/api/blocs/1"}}
+        {"name": "Supprimer bloc", "request": {"method": "DELETE", "url": "{{baseUrl}}/api/blocs/1"}},
+        {"name": "Affecter chambres au bloc", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "[101,102,103]"}, "url": "{{baseUrl}}/api/blocs/1/chambres"}}
       ]
     },
     {
