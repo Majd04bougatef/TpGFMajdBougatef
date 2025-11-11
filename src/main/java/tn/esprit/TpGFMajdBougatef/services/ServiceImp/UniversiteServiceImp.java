@@ -2,6 +2,8 @@ package tn.esprit.TpGFMajdBougatef.services.ServiceImp;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.TpGFMajdBougatef.entities.Universite;
 import tn.esprit.TpGFMajdBougatef.entities.Foyer;
@@ -33,16 +35,31 @@ public class UniversiteServiceImp implements UniversiteServiceInterfaces {
     @Override
     @Transactional
     public Universite affecterFoyerAUniversite(long idFoyer, String nomUniversite) {
-        Foyer foyer = foyerRepository.findById(idFoyer).orElse(null);
-        if (foyer == null) return null;
+        Foyer foyer = foyerRepository.findById(idFoyer)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Foyer introuvable: id=" + idFoyer));
 
         Universite universite = universiteRepository.findByNomUniversite(nomUniversite);
-        if (universite == null) return null;
+        
 
+        // Associate both sides
         foyer.setUniversite(universite);
         universite.setFoyer(foyer);
 
-        universiteRepository.save(universite);
+        // Persist using owning side (Foyer owns the FK)
+        foyerRepository.save(foyer);
+        return universite;
+    }
+
+    @Override
+    @Transactional
+    public Universite desaffecterFoyerAUniversite(long idUniversite) {
+        Universite universite = universiteRepository.findById(idUniversite)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Université introuvable: id=" + idUniversite));
+
+        Foyer foyer = universite.getFoyer();
+       
+        foyerRepository.save(foyer);
+        
         return universite;
     }
 }

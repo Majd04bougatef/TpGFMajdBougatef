@@ -19,4 +19,7 @@ public interface ChambreRepository extends JpaRepository<Chambre, Long> {
 
         // Pure derived: traverse c.bloc.foyer.capaciteFoyer
         List<Chambre> findByTypeCAndBlocFoyerCapaciteFoyer(TypeChambre typeC, long capaciteFoyer);
+
+        // Find chambres by their room numbers
+        List<Chambre> findByNumeroChambreIn(List<Long> numeros);
 }

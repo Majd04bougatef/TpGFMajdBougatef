@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "TP Gestion Foyer API",
+    "description": "Collection Postman pour tester les endpoints CRUD et services avancés du projet TP Gestion Foyer (Universite, Foyer, Bloc, Chambre, Reservation, Etudiant). Variable baseUrl configurable.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Variables",
+      "item": []
+    },
+    {
+      "name": "Universites",
+      "item": [
+        {
+          "name": "Lister universites",
+          "request": {"method": "GET", "url": "{{baseUrl}}/api/universites"}
+        },
+        {
+          "name": "Créer universite",
+          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"nomUniversite\": \"ESPRIT\",\n  \"adresse\": \"Ariana\"\n}"}, "url": "{{baseUrl}}/api/universites"}
+        },
+        {
+          "name": "Modifier universite",
+          "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idUniversite\": 1,\n  \"nomUniversite\": \"ESPRIT\",\n  \"adresse\": \"Ariana Technopole\"\n}"}, "url": "{{baseUrl}}/api/universites"}
+        },
+        {
+          "name": "Consulter universite",
+          "request": {"method": "GET", "url": "{{baseUrl}}/api/universites/1"}
+        },
+        {
+          "name": "Affecter foyer à universite",
+          "request": {"method": "PUT", "url": "{{baseUrl}}/api/universites/ESPRIT/foyer/1"}
+        }
+      ]
+    },
+    {
+      "name": "Foyers",
+      "item": [
+        {"name": "Lister foyers", "request": {"method": "GET", "url": "{{baseUrl}}/api/foyers"}},
+        {"name": "Créer foyer", "request": {"method": "POST", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"nomFoyer\": \"Foyer Central\",\n  \"capaciteFoyer\": 500\n}"}, "url": "{{baseUrl}}/api/foyers"}},
+        {"name": "Modifier foyer", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idFoyer\": 1,\n  \"nomFoyer\": \"Foyer Central\",\n  \"capaciteFoyer\": 550\n}"}, "url": "{{baseUrl}}/api/foyers"}},
+        {"name": "Consulter foyer", "request": {"method": "GET", "url": "{{baseUrl}}/api/foyers/1"}},
+        {"name": "Supprimer foyer", "request": {"method": "DELETE", "url": "{{baseUrl}}/api/foyers/1"}}
+      ]
+    },
+    {
+      "name": "Blocs",
+      "item": [
+        {"name": "Lister blocs", "request": {"method": "GET", "url": "{{baseUrl}}/api/blocs"}},
+        {"name": "Créer bloc", "request": {"method": "POST", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"nomBloc\": \"Bloc A\",\n  \"capaciteBloc\": 100\n}"}, "url": "{{baseUrl}}/api/blocs"}},
+        {"name": "Modifier bloc", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idBloc\": 1,\n  \"nomBloc\": \"Bloc A\",\n  \"capaciteBloc\": 120\n}"}, "url": "{{baseUrl}}/api/blocs"}},
+        {"name": "Consulter bloc", "request": {"method": "GET", "url": "{{baseUrl}}/api/blocs/1"}},
+        {"name": "Supprimer bloc", "request": {"method": "DELETE", "url": "{{baseUrl}}/api/blocs/1"}}
+      ]
+    },
+    {
+      "name": "Chambres",
+      "item": [
+        {"name": "Lister chambres", "request": {"method": "GET", "url": "{{baseUrl}}/api/chambres"}},
+        {"name": "Créer chambre", "request": {"method": "POST", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"numeroChambre\": 101,\n  \"typeC\": \"SIMPLE\"\n}"}, "url": "{{baseUrl}}/api/chambres"}},
+        {"name": "Modifier chambre", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idChambre\": 1,\n  \"numeroChambre\": 101,\n  \"typeC\": \"DOUBLE\"\n}"}, "url": "{{baseUrl}}/api/chambres"}},
+        {"name": "Consulter chambre", "request": {"method": "GET", "url": "{{baseUrl}}/api/chambres/1"}},
+        {"name": "Chambres par université", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/chambres/universite?nomUniversite=ESPRIT","host": ["{{baseUrl}}"], "path": ["api","chambres","universite"], "query": [{"key": "nomUniversite","value": "ESPRIT"}]}}},
+        {"name": "Chambres bloc+type (keywords)", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/chambres/bloc-type/keywords?idBloc=1&type=SIMPLE","host": ["{{baseUrl}}"], "path": ["api","chambres","bloc-type","keywords"], "query": [{"key": "idBloc","value": "1"},{"key": "type","value": "SIMPLE"}]}}},
+        {"name": "Chambres bloc+type (jpql)", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/chambres/bloc-type/jpql?idBloc=1&type=SIMPLE","host": ["{{baseUrl}}"], "path": ["api","chambres","bloc-type","jpql"], "query": [{"key": "idBloc","value": "1"},{"key": "type","value": "SIMPLE"}]}}},
+        {"name": "Chambres non reservées", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/chambres/non-reservees?nomUniversite=ESPRIT&type=SIMPLE","host": ["{{baseUrl}}"], "path": ["api","chambres","non-reservees"], "query": [{"key": "nomUniversite","value": "ESPRIT"},{"key": "type","value": "SIMPLE"}]}}}
+      ]
+    },
+    {
+      "name": "Reservations",
+      "item": [
+        {"name": "Lister reservations", "request": {"method": "GET", "url": "{{baseUrl}}/api/reservations"}},
+        {"name": "Consulter reservation", "request": {"method": "GET", "url": "{{baseUrl}}/api/reservations/RES123"}},
+        {"name": "Modifier reservation", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idReservation\": \"RES123\",\n  \"anneeUniversitaire\": \"2025-09-01\",\n  \"estValide\": true\n}"}, "url": "{{baseUrl}}/api/reservations"}},
+        {"name": "Reservations par année & université", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/reservations/par-annee-et-universite?anneeUniversite=2025-09-01&nomUniversite=ESPRIT","host": ["{{baseUrl}}"], "path": ["api","reservations","par-annee-et-universite"], "query": [{"key": "anneeUniversite","value": "2025-09-01"},{"key": "nomUniversite","value": "ESPRIT"}]}}}
+      ]
+    },
+    {
+      "name": "Etudiants",
+      "item": [
+        {"name": "Lister etudiants", "request": {"method": "GET", "url": "{{baseUrl}}/api/etudiants"}},
+        {"name": "Créer etudiants (batch)", "request": {"method": "POST", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "[\n  {\n    \"nomEt\": \"Doe\",\n    \"prenomEt\": \"John\",\n    \"cin\": 12345678,\n    \"ecole\": \"ESPRIT\",\n    \"dateNaissance\": \"2002-05-01\"\n  }\n]"}, "url": "{{baseUrl}}/api/etudiants"}},
+        {"name": "Modifier etudiant", "request": {"method": "PUT", "header": [{"key": "Content-Type","value":"application/json"}], "body": {"mode": "raw", "raw": "{\n  \"idEtudiant\": 1,\n  \"nomEt\": \"Doe\",\n  \"prenomEt\": \"Jane\",\n  \"cin\": 12345678,\n  \"ecole\": \"ESPRIT\",\n  \"dateNaissance\": \"2002-05-01\"\n}"}, "url": "{{baseUrl}}/api/etudiants"}},
+        {"name": "Consulter etudiant", "request": {"method": "GET", "url": "{{baseUrl}}/api/etudiants/1"}},
+        {"name": "Supprimer etudiant", "request": {"method": "DELETE", "url": "{{baseUrl}}/api/etudiants/1"}}
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8090"}
+  ]
+}

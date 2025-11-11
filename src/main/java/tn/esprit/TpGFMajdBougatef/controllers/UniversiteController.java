@@ -32,4 +32,16 @@ public class UniversiteController {
     @GetMapping("/{id}")
     @Operation(summary = "Consulter une université", description = "Récupère une université par identifiant")
     public Universite retrieveUniversite(@PathVariable("id") long idUniversite){ return universiteService.retrieveUniversite(idUniversite); }
+
+    @PutMapping("/{nomUniversite}/foyer/{idFoyer}")
+    @Operation(summary = "Affecter un foyer à une université", description = "Associe le foyer dont l'id est fourni à l'université identifiée par son nom")
+    public Universite affecterFoyerAUniversite(@PathVariable String nomUniversite, @PathVariable long idFoyer){
+        return universiteService.affecterFoyerAUniversite(idFoyer, nomUniversite);
+    }
+
+    @DeleteMapping("/{id}/foyer")
+    @Operation(summary = "Désaffecter le foyer d'une université", description = "Supprime l'association 1-1 entre l'université et son foyer, si elle existe")
+    public Universite desaffecterFoyerAUniversite(@PathVariable("id") long idUniversite){
+        return universiteService.desaffecterFoyerAUniversite(idUniversite);
+    }
 }

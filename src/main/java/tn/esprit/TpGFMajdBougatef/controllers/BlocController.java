@@ -36,4 +36,10 @@ public class BlocController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Supprimer un bloc", description = "Supprime un bloc par identifiant")
     public void removeBloc(@PathVariable("id") long idBloc){ blocService.removeBloc(idBloc); }
+
+    @PutMapping("/{id}/chambres")
+    @Operation(summary = "Affecter des chambres à un bloc", description = "Associe une liste de numéros de chambre au bloc donné")
+    public Bloc affecterChambresABloc(@PathVariable("id") long idBloc, @RequestBody List<Long> numeros){
+        return blocService.affecterChambresABloc(numeros, idBloc);
+    }
 }
