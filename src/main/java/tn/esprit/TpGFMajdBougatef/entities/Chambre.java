@@ -3,28 +3,36 @@ package tn.esprit.TpGFMajdBougatef.entities;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Entity
 @Table(name = "chambre")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Chambre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idChambre;
-
-    private Long numeroChambre;
+    Long idChambre;
+    Long numeroChambre;
 
     @Enumerated(EnumType.STRING)
-    private TypeChambre typeC;
+    TypeChambre typeC;
 
     @ManyToOne
-    @JoinColumn(name = "bloc_id", referencedColumnName = "idBloc")
-    @JsonIgnore
-    private Bloc bloc;
+    @JoinColumn(name = "idBloc")
+    Bloc bloc;
 
-    @OneToMany(mappedBy = "chambre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations;
+    @ManyToMany
+    @JoinTable(
+            name = "chambre_reservation",
+            joinColumns = @JoinColumn(name = "idChambre"),
+            inverseJoinColumns = @JoinColumn(name = "idReservation")
+    )
+    List<Reservation> reservations;
 }

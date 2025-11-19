@@ -3,27 +3,34 @@ package tn.esprit.TpGFMajdBougatef.entities;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "etudiant")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Etudiant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEtudiant;
+    long idEtudiant;
+    String nomEtudiant;
+    String prenomEtudiant;
+    long cin;
+    String ecole;
+    Date dateNaissance;
 
-    private String nomEt;
-    private String prenomEt;
-    private Long cin;
-    private String ecole;
-    @Temporal(TemporalType.DATE)
-    private Date dateNaissance;
-
-    // Child side of bidirectional many-to-many with Reservation
-    @ManyToMany(mappedBy = "etudiants")
-    @JsonIgnore
-    private List<Reservation> reservations;
+    @ManyToMany
+    @JoinTable(
+            name = "etudiant_reservation",
+            joinColumns = @JoinColumn(name = "idEtudiant"),
+            inverseJoinColumns = @JoinColumn(name = "idReservation")
+    )
+    List<Reservation> reservations;
 }

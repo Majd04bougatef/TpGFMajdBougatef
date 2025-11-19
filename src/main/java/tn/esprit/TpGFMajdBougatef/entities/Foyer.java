@@ -3,29 +3,28 @@ package tn.esprit.TpGFMajdBougatef.entities;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Entity
 @Table(name = "foyer")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Foyer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idFoyer;
+    long idFoyer;
+    String nomFoyer;
+    long capaciteFoyer;
 
-    private String nomFoyer;
+    @OneToOne(mappedBy = "foyer")
+    Universite universite;
 
-    private Long capaciteFoyer;
-
-    // Child side of 1-1 with Universite
-    @OneToOne
-    @JoinColumn(name = "universite_id", referencedColumnName = "idUniversite")
-    @JsonIgnore
-    private Universite universite;
-
-    // One foyer has many blocs
-    @OneToMany(mappedBy = "foyer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bloc> blocs;
+    @OneToMany(mappedBy = "foyer", cascade = CascadeType.ALL)
+    List<Bloc> blocs;
 }

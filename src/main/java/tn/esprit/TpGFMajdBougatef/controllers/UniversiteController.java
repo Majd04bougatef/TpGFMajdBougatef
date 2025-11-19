@@ -3,6 +3,8 @@ package tn.esprit.TpGFMajdBougatef.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.TpGFMajdBougatef.entities.Universite;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.UniversiteServiceInterfaces;
@@ -43,5 +45,23 @@ public class UniversiteController {
     @Operation(summary = "Désaffecter le foyer d'une université", description = "Supprime l'association 1-1 entre l'université et son foyer, si elle existe")
     public Universite desaffecterFoyerAUniversite(@PathVariable("id") long idUniversite){
         return universiteService.desaffecterFoyerAUniversite(idUniversite);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteUniversite(@PathVariable("id") Long idUniversite) {
+        //universiteService.removeUniversite(idUniversite);
+    }
+
+    @PutMapping("/affecterFoyerAUniversite/{idFoyer}/{nomUniversite}")
+    public ResponseEntity<?> affecterFoyerAUniversite(
+            @PathVariable long idFoyer,
+            @PathVariable String nomUniversite) {
+        try {
+            Universite u = universiteService.affecterFoyerAUniversite(idFoyer, nomUniversite);
+            return ResponseEntity.ok(u);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 }

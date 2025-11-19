@@ -1,6 +1,8 @@
 package tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces;
 
+import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
+import tn.esprit.TpGFMajdBougatef.entities.TypeChambre;
 
 import java.util.List;
 
@@ -12,6 +14,10 @@ public interface ChambreServiceInterfaces {
 
     // Partie 5
     List<Chambre> getChambresParNomUniversite(String nomUniversite);
-    List<Chambre> getChambresParBlocEtType(long idBloc, tn.esprit.TpGFMajdBougatef.entities.TypeChambre typeC);
-    List<Chambre> getChambresNonReserveParNomUniversiteEtTypeChambre(String nomUniversite, tn.esprit.TpGFMajdBougatef.entities.TypeChambre type);
+    List<Chambre> getChambresParBlocEtType(long idBloc, TypeChambre typeC);
+    List<Chambre> getChambresNonReserveParNomUniversiteEtTypeChambre(String nomUniversite, TypeChambre type);
+    List<Chambre> affecterChambresABloc(List<Long> numChambre, long idBloc);
+
+    List<Chambre> getChambresByTypeCAndBlocFoyerCapaciteFoyer(TypeChambre type, long c);
+
 }

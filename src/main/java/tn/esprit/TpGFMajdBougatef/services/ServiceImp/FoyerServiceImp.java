@@ -53,8 +53,13 @@ public class FoyerServiceImp implements FoyerServiceInterfaces {
             }
         }
 
-        // Persist cascade (Foyer has cascade on blocs) & link
-        Foyer saved = foyerRepository.save(foyer);
-        return saved;
+        Foyer foyerSauvegarde = foyerRepository.save(foyer);
+
+        universite.setFoyer(foyerSauvegarde);
+        universiteRepository.save(universite);
+
+        return foyerRepository.findById(foyerSauvegarde.getIdFoyer())
+                .orElseThrow(() -> new RuntimeException("⚠Erreur lors de la récupération du foyer créé"));
+
     }
 }

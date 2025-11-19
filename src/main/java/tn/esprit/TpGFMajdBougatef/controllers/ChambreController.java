@@ -21,7 +21,6 @@ import java.util.List;
 public class ChambreController {
 
     private final ChambreServiceInterfaces chambreService;
-    private final ChambreRepository chambreRepository; // retained for JPQL alternative demonstration
 
     @GetMapping
     @Operation(summary = "Lister toutes les chambres", description = "Récupère la liste de l'ensemble des chambres")

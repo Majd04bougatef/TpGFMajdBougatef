@@ -3,6 +3,8 @@ package tn.esprit.TpGFMajdBougatef.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.BlocServiceInterfaces;
@@ -41,5 +43,10 @@ public class BlocController {
     @Operation(summary = "Affecter des chambres à un bloc", description = "Associe une liste de numéros de chambre au bloc donné")
     public Bloc affecterChambresABloc(@PathVariable("id") long idBloc, @RequestBody List<Long> numeros){
         return blocService.affecterChambresABloc(numeros, idBloc);
+    }
+
+    @GetMapping("/byUniversite/{nomUniversite}")
+    public List<Bloc> getBlocsByUniversite(@PathVariable String nomUniversite) {
+        return blocService.getBlocsByNomUniversite(nomUniversite);
     }
 }

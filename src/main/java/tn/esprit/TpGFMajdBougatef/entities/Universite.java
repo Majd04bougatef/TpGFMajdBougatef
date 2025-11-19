@@ -2,21 +2,24 @@ package tn.esprit.TpGFMajdBougatef.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "universite")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Universite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idUniversite;
+    long idUniversite;
+    String nomUniversite;
+    String adresse;
 
-    private String nomUniversite;
-
-    private String adresse;
-
-    // Bidirectional 1-1 with Foyer (Universite parent, Foyer child)
-    @OneToOne(mappedBy = "universite", cascade = CascadeType.ALL)
-    private Foyer foyer;
+    @OneToOne
+    @JoinColumn(name = "idFoyer")
+    Foyer foyer;
 }

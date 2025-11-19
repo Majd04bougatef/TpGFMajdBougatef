@@ -2,13 +2,15 @@ package tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces;
 
 import tn.esprit.TpGFMajdBougatef.entities.Reservation;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ReservationServiceInterfaces {
     List<Reservation> retrieveAllReservation();
     Reservation updateReservation(Reservation res);
-    Reservation retrieveReservation(String idReservation);
+    Reservation retrieveReservation(long idReservation);
+    Reservation ajouterReservation(long idChambre, long cinEtudiant);
 
     // Partie 5
-    java.util.List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(java.util.Date anneeUniversite, String nomUniversite);
+    List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(Date anneeUniversite, String nomUniversite);
 }

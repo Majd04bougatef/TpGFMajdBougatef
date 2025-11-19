@@ -3,6 +3,8 @@ package tn.esprit.TpGFMajdBougatef.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.TpGFMajdBougatef.entities.Reservation;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ReservationServiceInterfaces;
@@ -29,7 +31,7 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consulter une réservation", description = "Récupère une réservation par identifiant")
-    public Reservation retrieveReservation(@PathVariable("id") String idReservation){ return reservationService.retrieveReservation(idReservation); }
+    public Reservation retrieveReservation(@PathVariable("id") long idReservation){ return reservationService.retrieveReservation(idReservation); }
 
     @GetMapping("/par-annee-et-universite")
     @Operation(summary = "Réservations par année et université", description = "Retourne les réservations effectuées durant une année universitaire donnée et pour une université (nom unique)")
@@ -37,5 +39,22 @@ public class ReservationController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date anneeUniversite,
             @RequestParam String nomUniversite){
         return reservationService.getReservationParAnneeUniversitaireEtNomUniversite(anneeUniversite, nomUniversite);
+    }
+
+    @GetMapping("/get/{id}")
+    public Reservation getReservation(@PathVariable("id") long idReservation) {
+        return reservationService.retrieveReservation(idReservation);
+    }
+
+    @PostMapping("/ajouterReservation/{idChambre}/{cinEtudiant}")
+    public ResponseEntity<?> ajouterReservation(
+            @PathVariable long idChambre,
+            @PathVariable long cinEtudiant) {
+        try {
+            Reservation reservation = reservationService.ajouterReservation(idChambre, cinEtudiant);
+            return ResponseEntity.ok(reservation);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

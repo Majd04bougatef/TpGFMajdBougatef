@@ -42,12 +42,10 @@ public class UniversiteServiceImp implements UniversiteServiceInterfaces {
         
 
         // Associate both sides
-        foyer.setUniversite(universite);
         universite.setFoyer(foyer);
 
-        // Persist using owning side (Foyer owns the FK)
-        foyerRepository.save(foyer);
-        return universite;
+        // Sauvegarder l’université
+        return universiteRepository.save(universite);
     }
 
     @Override
@@ -57,9 +55,15 @@ public class UniversiteServiceImp implements UniversiteServiceInterfaces {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Université introuvable: id=" + idUniversite));
 
         Foyer foyer = universite.getFoyer();
-       
+        universite.setFoyer(null);
+
+        foyer.setUniversite(null);
         foyerRepository.save(foyer);
-        
-        return universite;
+
+        foyerRepository.save(foyer);
+
+        Universite updated = universiteRepository.save(universite);
+
+        return updated;
     }
 }

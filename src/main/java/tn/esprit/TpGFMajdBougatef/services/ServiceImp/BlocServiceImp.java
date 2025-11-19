@@ -48,4 +48,11 @@ public class BlocServiceImp implements BlocServiceInterfaces {
         chambreRepository.saveAll(chambres);
         return bloc;
     }
+
+    @Override
+    public List<Bloc> getBlocsByNomUniversite(String nomUniversite) {
+        return blocRepository.findByFoyerUniversiteNomUniversite(nomUniversite);
+    }
+
+
 }

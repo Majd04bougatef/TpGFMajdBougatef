@@ -1,8 +1,15 @@
 package tn.esprit.TpGFMajdBougatef.services.ServiceImp;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
+import tn.esprit.TpGFMajdBougatef.entities.TypeChambre;
+import tn.esprit.TpGFMajdBougatef.repositories.BlocRepository;
 import tn.esprit.TpGFMajdBougatef.repositories.ChambreRepository;
 import tn.esprit.TpGFMajdBougatef.repositories.ReservationRepository;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ChambreServiceInterfaces;
@@ -14,10 +21,11 @@ import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ChambreServiceImp implements ChambreServiceInterfaces {
 
-    private final ChambreRepository chambreRepository;
-    private final ReservationRepository reservationRepository;
+      ChambreRepository chambreRepository;
+      BlocRepository blocRepository;
 
     @Override
     public List<Chambre> retrieveAllChambres() { return chambreRepository.findAll(); }
@@ -59,5 +67,26 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
                         .noneMatch(r -> r.getAnneeUniversitaire() != null &&
                                 r.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear() == targetYear))
                 .toList();
+    }
+
+    @Override
+    public List<Chambre> affecterChambresABloc(List<Long> numChambre, long idBloc) {
+        Bloc bloc = blocRepository.findById(idBloc)
+                .orElseThrow(() -> new RuntimeException("Bloc non trouvé avec ID : " + idBloc));
+
+        List<Chambre> chambres = chambreRepository.findByNumeroChambreIn(numChambre);
+
+        // Affecter le bloc à chaque chambre
+        for (Chambre chambre : chambres) {
+            chambre.setBloc(bloc);
+        }
+
+        // Sauvegarder toutes les chambres
+        return chambreRepository.saveAll(chambres);
+    }
+
+    @Override
+    public List<Chambre> getChambresByTypeCAndBlocFoyerCapaciteFoyer(TypeChambre type, long c) {
+        return chambreRepository.findByTypeCAndBlocFoyerCapaciteFoyer(type, c);
     }
 }
