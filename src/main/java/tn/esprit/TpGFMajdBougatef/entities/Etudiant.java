@@ -32,5 +32,6 @@ public class Etudiant {
             joinColumns = @JoinColumn(name = "idEtudiant"),
             inverseJoinColumns = @JoinColumn(name = "idReservation")
     )
+    @JsonIgnore
     List<Reservation> reservations;
 }

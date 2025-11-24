@@ -24,6 +24,7 @@ public class Bloc {
 
     @ManyToOne
     @JoinColumn(name = "idFoyer")
+    @JsonIgnore
     Foyer foyer;
 
     @OneToMany(mappedBy = "bloc", cascade = CascadeType.ALL, orphanRemoval = true)

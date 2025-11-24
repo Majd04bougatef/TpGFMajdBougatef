@@ -1,6 +1,5 @@
 package tn.esprit.TpGFMajdBougatef.services.ServiceImp;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +13,16 @@ import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ReservationServiceI
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 import java.time.ZoneId;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class ReservationServiceImp implements ReservationServiceInterfaces {
 
-    ReservationRepository reservationRepository;
-    ChambreRepository chambreRepository;
-    EtudiantRepository etudiantRepository;
+    private final ReservationRepository reservationRepository;
+    private final ChambreRepository chambreRepository;
+    private final EtudiantRepository etudiantRepository;
 
     @Override
     public List<Reservation> retrieveAllReservation() { return reservationRepository.findAll(); }

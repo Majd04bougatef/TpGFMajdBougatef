@@ -39,12 +39,29 @@ public class UniversiteServiceImp implements UniversiteServiceInterfaces {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Foyer introuvable: id=" + idFoyer));
 
         Universite universite = universiteRepository.findByNomUniversite(nomUniversite);
-        
+        if (universite == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Université introuvable: nom=" + nomUniversite);
+        }
 
-        // Associate both sides
+        if (foyer.getUniversite() != null && foyer.getUniversite().getIdUniversite() != universite.getIdUniversite()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Le foyer " + idFoyer + " est déjà associé à une autre université");
+        }
+
+        Foyer foyerAssocie = universite.getFoyer();
+        if (foyerAssocie != null && foyerAssocie.getIdFoyer() == foyer.getIdFoyer()) {
+            return universite;
+        }
+
+        if (foyerAssocie != null && foyerAssocie.getIdFoyer() != foyer.getIdFoyer()) {
+            foyerAssocie.setUniversite(null);
+            foyerRepository.save(foyerAssocie);
+        }
+
         universite.setFoyer(foyer);
+        foyer.setUniversite(universite);
+        foyerRepository.save(foyer);
 
-        // Sauvegarder l’université
         return universiteRepository.save(universite);
     }
 
@@ -57,13 +74,11 @@ public class UniversiteServiceImp implements UniversiteServiceInterfaces {
         Foyer foyer = universite.getFoyer();
         universite.setFoyer(null);
 
-        foyer.setUniversite(null);
-        foyerRepository.save(foyer);
+        if (foyer != null) {
+            foyer.setUniversite(null);
+            foyerRepository.save(foyer);
+        }
 
-        foyerRepository.save(foyer);
-
-        Universite updated = universiteRepository.save(universite);
-
-        return updated;
+        return universiteRepository.save(universite);
     }
 }

@@ -1,31 +1,24 @@
 package tn.esprit.TpGFMajdBougatef.services.ServiceImp;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
 import tn.esprit.TpGFMajdBougatef.entities.TypeChambre;
 import tn.esprit.TpGFMajdBougatef.repositories.BlocRepository;
 import tn.esprit.TpGFMajdBougatef.repositories.ChambreRepository;
-import tn.esprit.TpGFMajdBougatef.repositories.ReservationRepository;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ChambreServiceInterfaces;
 
 import java.util.List;
-import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class ChambreServiceImp implements ChambreServiceInterfaces {
 
-      ChambreRepository chambreRepository;
-      BlocRepository blocRepository;
+    private final ChambreRepository chambreRepository;
+    private final BlocRepository blocRepository;
 
     @Override
     public List<Chambre> retrieveAllChambres() { return chambreRepository.findAll(); }

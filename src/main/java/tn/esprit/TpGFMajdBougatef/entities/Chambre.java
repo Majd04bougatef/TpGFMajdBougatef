@@ -26,13 +26,15 @@ public class Chambre {
 
     @ManyToOne
     @JoinColumn(name = "idBloc")
+    @JsonIgnore
     Bloc bloc;
 
-    @ManyToMany
-    @JoinTable(
+        @ManyToMany
+        @JoinTable(
             name = "chambre_reservation",
             joinColumns = @JoinColumn(name = "idChambre"),
             inverseJoinColumns = @JoinColumn(name = "idReservation")
-    )
-    List<Reservation> reservations;
+        )
+        @JsonIgnore
+        List<Reservation> reservations;
 }
