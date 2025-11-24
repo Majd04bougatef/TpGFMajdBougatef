@@ -67,3 +67,5 @@ public class ChambreController {
         return chambreService.getChambresParBlocEtType(idBloc, type);
     }
 }
+
+
