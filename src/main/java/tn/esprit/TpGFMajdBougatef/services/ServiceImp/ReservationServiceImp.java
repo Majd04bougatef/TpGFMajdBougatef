@@ -38,7 +38,7 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
     public List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(Date anneeUniversite, String nomUniversite) {
         // Without JPQL YEAR, fetch by university and filter by year in memory
         int targetYear = anneeUniversite.toInstant().atZone(ZoneId.systemDefault()).getYear();
-        List<Reservation> reservations = reservationRepository.findByChambres_Bloc_Foyer_Universite_NomUniversite(nomUniversite);
+        List<Reservation> reservations = reservationRepository.findByAnneeUniversitaireAndChambresBlocFoyerUniversiteNomUniversite(anneeUniversite,nomUniversite);
         List<Reservation> filteredReservations = new ArrayList<>();
         for (Reservation reservation : reservations) {
             if (reservation.getAnneeUniversitaire() == null) {

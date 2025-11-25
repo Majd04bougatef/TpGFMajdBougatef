@@ -14,7 +14,7 @@ public interface ChambreRepository extends JpaRepository<Chambre, Long> {
         List<Chambre> findByBlocFoyerUniversiteNomUniversite(String nomUniversite);
 
         // Chambres par université & type (pure derived)
-        List<Chambre> findByTypeCAndBloc_Foyer_Universite_NomUniversite(TypeChambre typeC, String nomUniversite);
+        List<Chambre> findByTypeCAndBlocFoyerUniversiteNomUniversite(TypeChambre typeC, String nomUniversite);
 
         // JPQL: chambres par bloc & type
         @Query("SELECT c FROM Chambre c WHERE c.bloc.idBloc = :idBloc AND c.typeC = :typeC")

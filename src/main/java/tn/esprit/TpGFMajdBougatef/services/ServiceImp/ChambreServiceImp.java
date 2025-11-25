@@ -54,7 +54,7 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
     public List<Chambre> getChambresNonReserveParNomUniversiteEtTypeChambre(String nomUniversite, tn.esprit.TpGFMajdBougatef.entities.TypeChambre type) {
         int targetYear = LocalDate.now().getYear();
         // Fetch all chambres for this université and type, then filter out those having a reservation in the same year
-        List<Chambre> candidates = chambreRepository.findByTypeCAndBloc_Foyer_Universite_NomUniversite(type, nomUniversite);
+        List<Chambre> candidates = chambreRepository.findByTypeCAndBlocFoyerUniversiteNomUniversite(type, nomUniversite);
         List<Chambre> availableChambres = new ArrayList<>();
         for (Chambre chambre : candidates) {
             boolean hasReservationThisYear = false;
