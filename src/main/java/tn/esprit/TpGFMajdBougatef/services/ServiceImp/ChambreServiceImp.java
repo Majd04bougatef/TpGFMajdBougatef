@@ -40,32 +40,14 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
         return chambreRepository.findByBlocFoyerUniversiteNomUniversite(nomUniversite);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
-    public List<Chambre> getChambresParBlocEtType(long idBloc, tn.esprit.TpGFMajdBougatef.entities.TypeChambre typeC) {
-        // Use derived keywords implementation by default
-        return chambreRepository.findByBloc_IdBlocAndTypeC(idBloc, typeC);
+    public List<Chambre> getChambresParBlocEtType(long idBloc, TypeChambre typeC) {
+        return chambreRepository.findChambresByBlocAndType(idBloc, typeC);
     }
 
     // Alternative JPQL approach (not part of interface, but available for controller demo)
-    public List<Chambre> getChambresParBlocEtTypeJPQL(long idBloc, tn.esprit.TpGFMajdBougatef.entities.TypeChambre typeC) {
-        // Without JPQL we simply delegate to the same derived method
-        return chambreRepository.findByBloc_IdBlocAndTypeC(idBloc, typeC);
+    public List<Chambre> getChambresParBlocEtTypeJPQL(long idBloc, TypeChambre typeC) {
+        return chambreRepository.findChambresByBlocAndType(idBloc, typeC);
     }
 
     @Override

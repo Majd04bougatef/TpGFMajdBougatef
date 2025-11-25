@@ -51,24 +51,6 @@ public class ChambreController {
         return chambreService.getChambresParNomUniversite(nomUniversite);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/bloc-type/keywords")
     @Operation(summary = "Chambres par bloc et type (Keywords)", description = "Filtre les chambres d'un bloc selon leur type - version Derived Keywords")
     public List<Chambre> chambresParBlocEtTypeKeywords(@RequestParam long idBloc, @RequestParam TypeChambre type){
