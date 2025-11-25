@@ -38,11 +38,18 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
     public List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(Date anneeUniversite, String nomUniversite) {
         // Without JPQL YEAR, fetch by university and filter by year in memory
         int targetYear = anneeUniversite.toInstant().atZone(ZoneId.systemDefault()).getYear();
-        return reservationRepository.findByChambres_Bloc_Foyer_Universite_NomUniversite(nomUniversite)
-                .stream()
-                .filter(r -> r.getAnneeUniversitaire() != null &&
-                        r.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear() == targetYear)
-                .toList();
+        List<Reservation> reservations = reservationRepository.findByChambres_Bloc_Foyer_Universite_NomUniversite(nomUniversite);
+        List<Reservation> filteredReservations = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            if (reservation.getAnneeUniversitaire() == null) {
+                continue;
+            }
+            int reservationYear = reservation.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear();
+            if (reservationYear == targetYear) {
+                filteredReservations.add(reservation);
+            }
+        }
+        return filteredReservations;
     }
 
     @Override
@@ -82,5 +89,71 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
 
         // Retourner la réservation mise à jour
         return reservation;
+    }
+
+    @Override
+    @Transactional
+    public Reservation annulerReservation(long cinEtudiant) {
+        Etudiant etudiant = etudiantRepository.findByCin(cinEtudiant)
+                .orElseThrow(() -> new RuntimeException("etudiant non trouvé avec le CIN : " + cinEtudiant));
+
+        List<Reservation> studentReservations = etudiant.getReservations();
+        if (studentReservations == null || studentReservations.isEmpty()) {
+            throw new RuntimeException("Aucune réservation active pour l'étudiant avec le CIN : " + cinEtudiant);
+        }
+
+        Reservation reservationToCancel = null;
+        for (Reservation currentReservation : studentReservations) {
+            if (currentReservation.isEstValide()) {
+                reservationToCancel = currentReservation;
+                break;
+            }
+        }
+        if (reservationToCancel == null) {
+            reservationToCancel = studentReservations.get(0);
+        }
+
+        reservationToCancel.setEstValide(false);
+
+        List<Etudiant> reservationStudents = reservationToCancel.getEtudiants();
+        if (reservationStudents != null) {
+            for (int i = 0; i < reservationStudents.size(); i++) {
+                Etudiant currentStudent = reservationStudents.get(i);
+                if (currentStudent.getCin() == cinEtudiant) {
+                    reservationStudents.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        for (int i = 0; i < studentReservations.size(); i++) {
+            Reservation currentReservation = studentReservations.get(i);
+            if (currentReservation.getIdReservation() == reservationToCancel.getIdReservation()) {
+                studentReservations.remove(i);
+                break;
+            }
+        }
+        etudiantRepository.save(etudiant);
+
+        List<Chambre> reservationRooms = reservationToCancel.getChambres();
+        if (reservationRooms != null) {
+            List<Chambre> roomsSnapshot = new ArrayList<>(reservationRooms);
+            for (Chambre chambre : roomsSnapshot) {
+                List<Reservation> chambreReservations = chambre.getReservations();
+                if (chambreReservations != null) {
+                    for (int i = 0; i < chambreReservations.size(); i++) {
+                        Reservation currentReservation = chambreReservations.get(i);
+                        if (currentReservation.getIdReservation() == reservationToCancel.getIdReservation()) {
+                            chambreReservations.remove(i);
+                            break;
+                        }
+                    }
+                }
+                chambreRepository.save(chambre);
+            }
+            reservationRooms.clear();
+        }
+
+        return reservationRepository.save(reservationToCancel);
     }
 }

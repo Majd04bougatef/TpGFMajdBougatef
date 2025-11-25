@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
+import tn.esprit.TpGFMajdBougatef.entities.Reservation;
 import tn.esprit.TpGFMajdBougatef.entities.TypeChambre;
 import tn.esprit.TpGFMajdBougatef.repositories.BlocRepository;
 import tn.esprit.TpGFMajdBougatef.repositories.ChambreRepository;
 import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ChambreServiceInterfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -55,11 +57,26 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
         int targetYear = LocalDate.now().getYear();
         // Fetch all chambres for this université and type, then filter out those having a reservation in the same year
         List<Chambre> candidates = chambreRepository.findByTypeCAndBloc_Foyer_Universite_NomUniversite(type, nomUniversite);
-        return candidates.stream()
-                .filter(c -> c.getReservations() == null || c.getReservations().stream()
-                        .noneMatch(r -> r.getAnneeUniversitaire() != null &&
-                                r.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear() == targetYear))
-                .toList();
+        List<Chambre> availableChambres = new ArrayList<>();
+        for (Chambre chambre : candidates) {
+            boolean hasReservationThisYear = false;
+            if (chambre.getReservations() != null) {
+                for (Reservation reservation : chambre.getReservations()) {
+                    if (reservation.getAnneeUniversitaire() == null) {
+                        continue;
+                    }
+                    int reservationYear = reservation.getAnneeUniversitaire().toInstant().atZone(ZoneId.systemDefault()).getYear();
+                    if (reservationYear == targetYear) {
+                        hasReservationThisYear = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasReservationThisYear) {
+                availableChambres.add(chambre);
+            }
+        }
+        return availableChambres;
     }
 
     @Override

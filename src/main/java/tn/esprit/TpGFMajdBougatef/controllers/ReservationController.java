@@ -57,4 +57,15 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PutMapping("/annuler/{cinEtudiant}")
+    @Operation(summary = "Annuler la réservation d'un étudiant", description = "Met fin à la réservation active associée à un CIN et désaffecte les entités liées")
+    public ResponseEntity<?> annulerReservation(@PathVariable long cinEtudiant) {
+        try {
+            Reservation reservation = reservationService.annulerReservation(cinEtudiant);
+            return ResponseEntity.ok(reservation);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
