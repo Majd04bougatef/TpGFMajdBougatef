@@ -487,6 +487,18 @@
               "path": ["api", "reservations", "ajouterReservation", "{{chambreId}}", "{{etudiantCin}}"]
             }
           }
+        },
+        {
+          "name": "Annuler la réservation d'un étudiant",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/annuler/{{etudiantCin}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservations", "annuler", "{{etudiantCin}}"]
+            }
+          }
         }
       ]
     },

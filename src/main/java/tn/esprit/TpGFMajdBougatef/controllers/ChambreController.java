@@ -46,10 +46,28 @@ public class ChambreController {
     }
 
     @GetMapping("/universite")
-    @Operation(summary = "Chambres par université", description = "Retourne toutes les chambres d'une université (nom unique)")
+    @Operation(summary = "Chambres par uni", description = "toutes les cham d'une uni ")
     public List<Chambre> chambresParUniversite(@RequestParam String nomUniversite){
         return chambreService.getChambresParNomUniversite(nomUniversite);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/bloc-type/keywords")
     @Operation(summary = "Chambres par bloc et type (Keywords)", description = "Filtre les chambres d'un bloc selon leur type - version Derived Keywords")

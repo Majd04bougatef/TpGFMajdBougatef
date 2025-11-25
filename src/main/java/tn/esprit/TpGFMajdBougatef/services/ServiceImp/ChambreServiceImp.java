@@ -37,8 +37,24 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
     // Partie 5
     @Override
     public List<Chambre> getChambresParNomUniversite(String nomUniversite) {
-        return chambreRepository.findByBloc_Foyer_Universite_NomUniversite(nomUniversite);
+        return chambreRepository.findByBlocFoyerUniversiteNomUniversite(nomUniversite);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public List<Chambre> getChambresParBlocEtType(long idBloc, tn.esprit.TpGFMajdBougatef.entities.TypeChambre typeC) {

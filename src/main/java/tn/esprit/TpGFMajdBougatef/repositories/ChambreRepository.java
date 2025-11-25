@@ -9,7 +9,7 @@ import java.util.List;
 public interface ChambreRepository extends JpaRepository<Chambre, Long> {
 
         // Chambres par nom université (pure derived)
-        List<Chambre> findByBloc_Foyer_Universite_NomUniversite(String nomUniversite);
+        List<Chambre> findByBlocFoyerUniversiteNomUniversite(String nomUniversite);
 
         // Chambres par université & type (pure derived)
         List<Chambre> findByTypeCAndBloc_Foyer_Universite_NomUniversite(TypeChambre typeC, String nomUniversite);
