@@ -38,7 +38,7 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
     public List<Reservation> getReservationParAnneeUniversitaireEtNomUniversite(Date anneeUniversite, String nomUniversite) {
         // Without JPQL YEAR, fetch by university and filter by year in memory
         int targetYear = anneeUniversite.toInstant().atZone(ZoneId.systemDefault()).getYear();
-        List<Reservation> reservations = reservationRepository.findByAnneeUniversitaireAndChambresBlocFoyerUniversiteNomUniversite(anneeUniversite,nomUniversite);
+        List<Reservation> reservations = reservationRepository.findReservationsByUniversite(nomUniversite);
         List<Reservation> filteredReservations = new ArrayList<>();
         for (Reservation reservation : reservations) {
             if (reservation.getAnneeUniversitaire() == null) {
@@ -68,7 +68,6 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
         reservation.setAnneeUniversitaire(new Date());
         reservation.setEstValide(true);
         reservation.setEtudiants(new ArrayList<>());
-        reservation.setChambres(new ArrayList<>());
 
         // Sauvegarder la réservation d'abord pour avoir un ID
         reservation = reservationRepository.save(reservation);
@@ -135,23 +134,20 @@ public class ReservationServiceImp implements ReservationServiceInterfaces {
         }
         etudiantRepository.save(etudiant);
 
-        List<Chambre> reservationRooms = reservationToCancel.getChambres();
-        if (reservationRooms != null) {
-            List<Chambre> roomsSnapshot = new ArrayList<>(reservationRooms);
-            for (Chambre chambre : roomsSnapshot) {
-                List<Reservation> chambreReservations = chambre.getReservations();
-                if (chambreReservations != null) {
-                    for (int i = 0; i < chambreReservations.size(); i++) {
-                        Reservation currentReservation = chambreReservations.get(i);
-                        if (currentReservation.getIdReservation() == reservationToCancel.getIdReservation()) {
-                            chambreReservations.remove(i);
-                            break;
-                        }
-                    }
-                }
-                chambreRepository.save(chambre);
+        List<Chambre> reservationRooms = chambreRepository.findByReservationsIdReservation(reservationToCancel.getIdReservation());
+        for (Chambre chambre : reservationRooms) {
+            List<Reservation> chambreReservations = chambre.getReservations();
+            if (chambreReservations == null) {
+                continue;
             }
-            reservationRooms.clear();
+            for (int i = 0; i < chambreReservations.size(); i++) {
+                Reservation currentReservation = chambreReservations.get(i);
+                if (currentReservation.getIdReservation() == reservationToCancel.getIdReservation()) {
+                    chambreReservations.remove(i);
+                    break;
+                }
+            }
+            chambreRepository.save(chambre);
         }
 
         return reservationRepository.save(reservationToCancel);

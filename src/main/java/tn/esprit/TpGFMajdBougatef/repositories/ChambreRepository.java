@@ -25,4 +25,7 @@ public interface ChambreRepository extends JpaRepository<Chambre, Long> {
 
         // Find chambres by their room numbers
         List<Chambre> findByNumeroChambreIn(List<Long> numeros);
+
+        // Find chambres contenant une réservation spécifique
+        List<Chambre> findByReservationsIdReservation(long idReservation);
 }

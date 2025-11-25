@@ -29,12 +29,7 @@ public class Chambre {
     @JsonIgnore
     Bloc bloc;
 
-        @ManyToMany
-        @JoinTable(
-            name = "chambre_reservation",
-            joinColumns = @JoinColumn(name = "idChambre"),
-            inverseJoinColumns = @JoinColumn(name = "idReservation")
-        )
+        @OneToMany
         @JsonIgnore
         List<Reservation> reservations;
 }
