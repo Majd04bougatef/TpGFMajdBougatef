@@ -1,7 +1,9 @@
 package tn.esprit.TpGFMajdBougatef.services.ServiceImp;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 import tn.esprit.TpGFMajdBougatef.entities.Bloc;
 import tn.esprit.TpGFMajdBougatef.entities.Chambre;
 import tn.esprit.TpGFMajdBougatef.entities.Reservation;
@@ -12,11 +14,14 @@ import tn.esprit.TpGFMajdBougatef.services.ServiceInterfaces.ChambreServiceInter
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChambreServiceImp implements ChambreServiceInterfaces {
 
     private final ChambreRepository chambreRepository;
@@ -96,5 +101,29 @@ public class ChambreServiceImp implements ChambreServiceInterfaces {
     @Override
     public List<Chambre> getChambresByTypeCAndBlocFoyerCapaciteFoyer(TypeChambre type, long c) {
         return chambreRepository.findByTypeCAndBlocFoyerCapaciteFoyer(type, c);
+    }
+
+    // Scheduled task to log non-reserved rooms per university for the current academic year
+    @Scheduled(fixedRate = 60000)
+    public void afficherChambresNonReserveesCetteAnnee() {
+        int currentYear = LocalDate.now().getYear();
+        List<Object[]> rawResults = chambreRepository.findNonReservedChambresByUniversite(currentYear);
+
+        if (rawResults.isEmpty()) {
+            log.info("Aucune chambre non réservée pour l'année {}.", currentYear);
+            return;
+        }
+
+        Map<String, List<Long>> chambresParUniversite = new LinkedHashMap<>();
+        for (Object[] row : rawResults) {
+            String universite = row[0] != null ? (String) row[0] : "Universite non affectée";
+            Long numeroChambre = (Long) row[1];
+            chambresParUniversite
+                    .computeIfAbsent(universite, key -> new ArrayList<>())
+                    .add(numeroChambre);
+        }
+
+        chambresParUniversite.forEach((universite, numeros) ->
+                log.info("Universite '{}': chambres non réservées en {} -> {}", universite, currentYear, numeros));
     }
 }

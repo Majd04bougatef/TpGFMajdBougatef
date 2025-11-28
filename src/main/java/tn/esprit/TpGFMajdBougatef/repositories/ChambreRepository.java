@@ -28,4 +28,13 @@ public interface ChambreRepository extends JpaRepository<Chambre, Long> {
 
         // Find chambres contenant une réservation spécifique
         List<Chambre> findByReservationsIdReservation(long idReservation);
+
+
+        @Query("SELECT u.nomUniversite, c.numeroChambre FROM Chambre c " +
+                "LEFT JOIN c.bloc b " +
+                "LEFT JOIN b.foyer f " +
+                "LEFT JOIN f.universite u " +
+                "LEFT JOIN c.reservations r WITH FUNCTION('YEAR', r.anneeUniversitaire) = :year " +
+                "WHERE r IS NULL")
+        List<Object[]> findNonReservedChambresByUniversite(@Param("year") int year);
 }
